@@ -1,7 +1,7 @@
 {
 	"name": "sigito-clicker",
 	"version": "0.1.0",
-	"main": "index.js",
+	"main": "./go.js",
 	"author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
 	"license": "UNLICENSED",
 	"type": "module",
