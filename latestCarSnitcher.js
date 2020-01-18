@@ -215,3 +215,20 @@ function parseVehicleIDFromOnclick(onclickAttributeStr) {
 
 	return idNum;
 }
+
+/**
+ * @param {puppeteer.Page} page
+ * @param {string} xpath
+ * @param {string} propertyName
+ *
+ * @returns {Promise<string>}
+ */
+async function getPropertyStrByXPath(page, xpath, propertyName) {
+	/** @type {puppeteer.JSHandle<any>} */
+	const rawProperty = await getPropertyByXPath(page, xpath, propertyName);
+
+	/** @type {string} */
+	const propertyStr = await rawProperty.jsonValue();
+
+	return propertyStr;
+}
