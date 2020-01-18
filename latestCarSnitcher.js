@@ -157,3 +157,18 @@ async function authenticate(page, username, password) {
 
 	await page.click(submitSelector);
 }
+
+/**
+ * @param {puppeteer.Page} page
+ *
+ * @returns {Promise<number>}
+ */
+async function getCurrentVehicleId(page) {
+	const aHrefXPath = '//*[@id="vehdetail"]/a';
+
+	const onclickHandlerProperty = await getPropertyByXPath(page, aHrefXPath, "onclick");
+	const onclickHandlerValue = getOnClickHandlerValue(onclickHandlerProperty);
+	const currentVehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
+
+	return currentVehicleId;
+}
