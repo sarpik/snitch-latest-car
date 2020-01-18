@@ -13,4 +13,6 @@ export default {
 	username: "",
 	password: "",
 	identificationNumber: "",
+	headless: false,
+	shouldCloseBrowserOnceDone: false,
 };
