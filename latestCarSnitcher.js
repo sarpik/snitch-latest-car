@@ -184,3 +184,34 @@ function getOnClickHandlerValue(onclickHandlerProperty) {
 
 	return valueStr;
 }
+
+/**
+ * @param {string} onclickAttributeStr
+ * @example
+ * ```js
+ * function onclick(event) {
+ * viewdetail('37640','1579264877_1347363_9336478.jpg');
+ * }
+ * ```
+ *
+ * @returns {number}
+ * @example 37640
+ */
+function parseVehicleIDFromOnclick(onclickAttributeStr) {
+	/** @type {string} */
+	const idStr = onclickAttributeStr.split("'")[1];
+	/**   ` function onclick(event) { viewdetail('37640','1579264877_1347363_9336478.jpg'); }` */
+	/** `[" function onclick(event) { viewdetail(", "37640", ",", "1579264877_1347363_9336478.jpg", "); }"]` */
+	/**                                            `"37640"` */
+
+	/** @type {number} */
+	const idNum = Number(idStr);
+
+	if (isNaN(idNum)) {
+		console.error(
+			`failed to \`parseVehicleIDFromOnclick\`! provided \`onclickAttributeStr\` was ${onclickAttributeStr}`
+		);
+	}
+
+	return idNum;
+}
