@@ -172,3 +172,15 @@ async function getCurrentVehicleId(page) {
 
 	return currentVehicleId;
 }
+
+/**
+ * @param {puppeteer.JSHandle<any>} onclickHandlerProperty
+ *
+ * @returns {string}
+ */
+function getOnClickHandlerValue(onclickHandlerProperty) {
+	/** @type {string} */
+	const valueStr = onclickHandlerProperty._remoteObject.description;
+
+	return valueStr;
+}
