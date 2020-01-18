@@ -232,3 +232,18 @@ async function getPropertyStrByXPath(page, xpath, propertyName) {
 
 	return propertyStr;
 }
+
+/**
+ *
+ * @param {puppeteer.Page} page
+ * @param {string} xpath
+ * @param {string} propertyName
+ *
+ * @returns {Promise<puppeteer.JSHandle<any>>}
+ */
+async function getPropertyByXPath(page, xpath, propertyName) {
+	const [element] = await page.$x(xpath);
+	const rawProperty = await element.getProperty(propertyName);
+
+	return rawProperty;
+}
