@@ -18,11 +18,9 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  * 1. go to the main url
  * 2. authenticate
  * 3. Go to the latest update car page
- * 4. get the latest car's ~~image~~ ID
- * 5. compare it with the stored one
- * 5.1 if they          are     equal - refresh page & go to step 4.
- * 5.2 otherwise - they are NOT equal - store it as the latest car's ID
- * 6. scroll down to the bottom of the car's info page
+ * 4. store the initial latest car's ID
+ * 5. refresh the page until a newer car with a different ID appears
+ * 6. scroll down to the bottom of the newer / latest car's info page
  * 7. click the "buy now" button to navigate to another page
  * 8. click on the input field for "identification number"
  * 9. paste the identification number (always the same)
@@ -49,13 +47,18 @@ export const latestCarSnitcher = async () => {
 
 	await page.goto(recentlyAddedVehiclesUrl);
 
-	/** @type {(number|null)} */
+	/** @type {number} */
+	const initialVehicleId = await getCurrentVehicleId(page);
+
+	console.log("initialVehicleId", initialVehicleId);
+
+	/**e @type {(number|null)} */
 	let latestVehicleId = null;
 
 	while (true) {
 		const currentVehicleId = await getCurrentVehicleId(page);
 
-		if (currentVehicleId === latestVehicleId) {
+		if (currentVehicleId === initialVehicleId) {
 			/** nothing new - refresh & try again */
 			await page.reload();
 
