@@ -40,7 +40,6 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
 export const latestCarSnitcher = async () => {
 	const browser = await puppeteer.launch({
 		headless: config.headless,
-		// slowMo: 500,
 	});
 
 	const page = await browser.newPage();
@@ -70,14 +69,6 @@ export const latestCarSnitcher = async () => {
 
 	console.log("latestVehicleId", latestVehicleId);
 
-	/** NOTE there are two buttons with duplicate id's, so you cannot use an ID to select'em */
-	// // const buyNowButtonSelector = "#submit_trans";
-	// // await page.waitForXPath(
-	// // 	"/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input"
-	// // );
-	// // console.log("waiting done");
-	// // await page.click(buyNowButtonFullXPath);
-
 	const buyNowButtonFullXPath =
 		"/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
 
@@ -104,24 +95,6 @@ export const latestCarSnitcher = async () => {
 
 	await page.waitFor(goBackButtonSelector);
 	await page.click(goBackButtonSelector);
-
-	// /**
-	//  * Click on some image to open the full description
-	//  */
-	// // const cardAHrefSelector = "#vehhinfo > a";
-	// // await page.click(cardAHrefSelector);
-	// const aHrefFullXPath = "/html/body/div[2]/div[3]/div[2]/div/div[1]/div[2]/div/table/tbody/tr[1]/td[2]/div/div[4]/a";
-	// const href = await getPropertyStrByXPath(page, aHrefFullXPath, "href");
-
-	// console.log("href", href);
-
-	// await page.goto(href, {
-	// 	/**
-	// 	 * https://stackoverflow.com/a/46217285/9285308
-	// 	 * & https://github.com/puppeteer/puppeteer/blob/master/docs/api.md#pagegotourl-options
-	// 	 */
-	// 	waitUntil: "networkidle2",
-	// });
 
 	// eslint-disable-next-line no-extra-boolean-cast
 	if (!!config.headless || !!config.shouldCloseBrowserOnceDone) {
