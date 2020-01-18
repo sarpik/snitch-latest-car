@@ -5,4 +5,7 @@
   "author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
 	"license": "UNLICENSED",
 	"type": "module",
+	"dependencies": {
+		"puppeteer": "^2.0.0"
+	}
 }
