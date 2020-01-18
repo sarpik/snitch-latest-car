@@ -1,10 +1,14 @@
 {
-  "name": "sigito-clicker",
-  "version": "0.1.0",
-  "main": "index.js",
-  "author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
+	"name": "sigito-clicker",
+	"version": "0.1.0",
+	"main": "index.js",
+	"author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
 	"license": "UNLICENSED",
 	"type": "module",
+	"scripts": {
+		"start": "yarn go",
+		"go": "./go.js --experimental-modules"
+	},
 	"dependencies": {
 		"puppeteer": "^2.0.0"
 	}
