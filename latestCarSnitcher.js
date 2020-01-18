@@ -131,3 +131,29 @@ export const latestCarSnitcher = async () => {
 
 	return;
 };
+
+/**
+ * @param {puppeteer.Page} page
+ * @param {string} username
+ * @param {string} password
+ *
+ * @returns {Promise<void>}
+ */
+async function authenticate(page, username, password) {
+	const usernameSelector = "#username";
+	const passwordSelector = "#password";
+	const submitSelector = "#submit";
+
+	// // await page.$eval(usernameSelector, (element) => {
+	// // 	console.log("element", element);
+	// // 	element.value = username;
+	// // });
+
+	await page.focus(usernameSelector);
+	await page.keyboard.type(username);
+
+	await page.focus(passwordSelector);
+	await page.keyboard.type(password);
+
+	await page.click(submitSelector);
+}
