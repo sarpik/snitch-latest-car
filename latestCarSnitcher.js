@@ -7,8 +7,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const path = require("path");
+const fs = require("fs");
 const puppeteer = require("puppeteer");
-const config = require("./config");
 
 const url = "https://www.vaurioajoneuvo.fi/";
 const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act=lastest";
@@ -39,6 +39,9 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  */
 // export const latestCarSnitcher = async () => {
 const latestCarSnitcher = async () => {
+	/** @type {import("./config.example" )} */
+	const config = getConfig();
+
 	const executablePath = getExecutablePath();
 
 	const browser = await puppeteer.launch({
@@ -115,6 +118,28 @@ const latestCarSnitcher = async () => {
 
 	return;
 };
+
+/**
+ * wrapped into an `eval` so that it's not included in the binary
+ * & thus a `config.js` file must be provided
+ * when using the executable,
+ * which is what we wanted in the first place - customisability
+ *
+ * @returns {import("./config.example" )}
+ */
+function getConfig() {
+	// // const configFilePath = path.join(__dirname, "config.js");
+	const configFilePath = "config.js";
+
+	const configFile = fs.readFileSync(configFilePath, { encoding: "utf-8" });
+
+	/** @type {import("./config.example") } */
+	const config = eval(configFile);
+
+	// // const config = require("./config");
+
+	return config;
+}
 
 /**
  * see https://github.com/zeit/pkg/issues/204#issuecomment-536323464
