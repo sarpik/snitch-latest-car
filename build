@@ -16,10 +16,18 @@ const path = require("path");
 const { exec: execPkg } = require("pkg");
 
 const outDirPath = "dist";
+
+const exampleConfigFilePath = "config.example.js";
+const configFileOutPath = path.join(outDirPath, "config.js");
+
 const chromiumDirPath = path.join("node_modules", "puppeteer", ".local-chromium");
 const chromiumOutDirPath = path.join(outDirPath, "puppeteer");
 
 fs.removeSync(outDirPath);
+
+fs.ensureDirSync(outDirPath);
+
+fs.copyFileSync(exampleConfigFilePath, configFileOutPath);
 
 execPkg([
 	"./go", //
