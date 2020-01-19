@@ -1,12 +1,6 @@
 /**
- * EN |
- * Warning - this file should be kept private.
- * Copy & rename it to `config.js`
- *
- * LT |
- * Dėmesio - šis failas turi būti privatus.
- * Nukopijuok ir pervadink jį į `config.js`
- *
+ * EN | Warning - this file should be kept private.
+ * LT |  Dėmesio - šis failas turi būti privatus.
  */
 
 const config = {
@@ -17,5 +11,4 @@ const config = {
 	shouldCloseBrowserOnceDone: false,
 };
 
-// export default config;
 module.exports = config;
