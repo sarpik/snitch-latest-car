@@ -39,7 +39,10 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  */
 // export const latestCarSnitcher = async () => {
 const latestCarSnitcher = async () => {
+	const executablePath = getExecutablePath();
+
 	const browser = await puppeteer.launch({
+		executablePath: executablePath,
 		headless: config.headless,
 	});
 
@@ -108,8 +111,32 @@ const latestCarSnitcher = async () => {
 		await browser.close();
 	}
 
+	console.log("done");
+
 	return;
 };
+
+/**
+ * see https://github.com/zeit/pkg/issues/204#issuecomment-536323464
+ *
+ * @returns {string}
+ */
+function getExecutablePath() {
+	const executablePath =
+		process.env.PUPPETEER_EXECUTABLE_PATH ||
+		(process.pkg
+			? path.join(
+					path.dirname(process.execPath),
+					"puppeteer",
+					...puppeteer
+						.executablePath()
+						.split(path.sep)
+						.slice(6) // /snapshot/project/node_modules/puppeteer/.local-chromium
+			  )
+			: puppeteer.executablePath());
+
+	return executablePath;
+}
 
 /**
  * @param {puppeteer.Page} page
