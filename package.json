@@ -7,7 +7,9 @@
 	"scripts": {
 		"start": "yarn go",
 		"go": "./go",
-		"build": "./build"
+		"build": "./build",
+		"zip": "zip snitch-latest-car dist -r",
+		"package": "yarn build && yarn zip"
 	},
 	"dependencies": {
 		"puppeteer": "^2.0.0"

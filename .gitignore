@@ -1,6 +1,9 @@
 # Private
 /config.js
 
+# Packaged
+snitch-latest-car.zip
+
 # Logs
 logs
 *.log
