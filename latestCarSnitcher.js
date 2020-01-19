@@ -4,9 +4,11 @@
  */
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-import puppeteer from "puppeteer";
-import config from "./config.js";
+const path = require("path");
+const puppeteer = require("puppeteer");
+const config = require("./config");
 
 const url = "https://www.vaurioajoneuvo.fi/";
 const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act=lastest";
@@ -35,7 +37,8 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  *
  * @returns {Promise<void>}
  */
-export const latestCarSnitcher = async () => {
+// export const latestCarSnitcher = async () => {
+const latestCarSnitcher = async () => {
 	const browser = await puppeteer.launch({
 		headless: config.headless,
 	});
@@ -206,3 +209,7 @@ async function getPropertyByXPath(page, xpath, propertyName) {
 
 	return rawProperty;
 }
+
+module.exports = {
+	latestCarSnitcher,
+};

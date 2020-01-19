@@ -4,7 +4,6 @@
 	"main": "./go.js",
 	"author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
 	"license": "UNLICENSED",
-	"type": "module",
 	"scripts": {
 		"start": "yarn go",
 		"go": "./go.js --experimental-modules"

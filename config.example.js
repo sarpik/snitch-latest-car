@@ -9,10 +9,13 @@
  *
  */
 
-export default {
+const config = {
 	username: "",
 	password: "",
 	identificationNumber: "",
 	headless: false,
 	shouldCloseBrowserOnceDone: false,
 };
+
+// export default config;
+module.exports = config;
