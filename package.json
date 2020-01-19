@@ -7,8 +7,13 @@
 	"scripts": {
 		"start": "yarn go",
 		"go": "./go",
+		"build": "./build"
 	},
 	"dependencies": {
 		"puppeteer": "^2.0.0"
+	},
+	"devDependencies": {
+		"fs-extra": "^8.1.0",
+		"pkg": "^4.4.2"
 	}
 }

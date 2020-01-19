@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+// build.js
+
+/**
+ * you could use
+ *
+ * ```sh
+ * yarn pkg ./go --out-path ./dist && cp -r ./node_modules/puppeteer/.local-chromium ./dist/puppeteer
+ * ```
+ *
+ * but this is cross-platform (hopefully?)
+ */
+
+const fs = require("fs-extra");
+const path = require("path");
+const { exec: execPkg } = require("pkg");
+
+const outDirPath = "dist";
+const chromiumDirPath = path.join("node_modules", "puppeteer", ".local-chromium");
+const chromiumOutDirPath = path.join(outDirPath, "puppeteer");
+
+fs.removeSync(outDirPath);
+
+execPkg([
+	"./go", //
+	"--out-path",
+	outDirPath,
+	"--config",
+	"package.json",
+]);
+
+fs.copySync(chromiumDirPath, chromiumOutDirPath, { recursive: true });
