@@ -11,7 +11,7 @@
 		"zip": "zip snitch-latest-car dist -r",
 		"package": "yarn build && yarn zip",
 		"build:installer:broken": "rm -rf bundle && yarn pkg installer.js --out-path bundle # TODO Create issue @ zeit/pkg",
-		"build:installer": "rm -rf bundle && yarn nexe --input installer.js --target 12.9.1 --output ./installer"
+		"build-installer": "./build-installer.sh"
 	},
 	"dependencies": {
 		"node-gyp": "^6.1.0",
