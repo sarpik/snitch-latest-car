@@ -23,7 +23,7 @@ const build = async () => {
 	const chromiumDirPath = path.join("node_modules", "puppeteer", ".local-chromium");
 	const chromiumOutDirPath = path.join(outDirPath, "puppeteer");
 
-	await fs.removeSync(outDirPath);
+	await fs.remove(outDirPath);
 
 	await fs.ensureDir(outDirPath);
 
