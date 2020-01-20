@@ -81,6 +81,13 @@ const repoGzippedArchiveUrl = `${repoUrl}/archive/${repoBranch}.tar.gz`;
  *
  */
 const installer = async () => {
+	console.log(`\
+installer
+
+repoUrl:               ${repoUrl}
+repoGzippedArchiveUrl: ${repoGzippedArchiveUrl}
+`);
+
 	const originalDir = process.cwd(); /** will cd back to this once done */
 	let tempDir;
 
