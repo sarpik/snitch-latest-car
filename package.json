@@ -21,12 +21,11 @@
 		"patch-package": "^6.2.0",
 		"postinstall-postinstall": "^2.0.0",
 		"puppeteer": "^2.0.0",
-		"tar": "^5.0.5"
-	},
-	"devDependencies": {
+		"tar": "^5.0.5",
 		"fs-extra": "^8.1.0",
 		"nexe": "^3.3.2",
 		"node-fetch": "^2.6.0",
 		"pkg": "^4.4.2"
-	}
+	},
+	"devDependencies": {}
 }
