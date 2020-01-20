@@ -226,7 +226,7 @@ repoGzippedArchiveUrl: ${repoGzippedArchiveUrl}
 
 				await downloadChromium({
 					revision, //
-					onProgress: () => {},
+					onProgress: undefined,
 					installPath: chromiumInstallPath,
 				});
 
