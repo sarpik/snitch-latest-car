@@ -58,7 +58,7 @@ const streamPipeline = util.promisify(require("stream").pipeline);
 
 const repoName = "snitch-latest-car";
 const repoUrl = `https://github.com/sarpik/${repoName}`;
-const repoBranch = "master";
+const repoBranch = "master"; /** NOTE you can change this to test our your branch */
 const getRepoPath = (tempDir) => path.join(tempDir, `${repoName}-${repoBranch.replace("/", "-")}`);
 
 /**
