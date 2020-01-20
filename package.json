@@ -5,17 +5,21 @@
 	"author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
 	"license": "UNLICENSED",
 	"scripts": {
+		"postinstall": "patch-package",
 		"start": "yarn go",
 		"go": "node go",
 		"build": "node build",
 		"zip": "zip snitch-latest-car dist -r",
 		"package": "yarn build && yarn zip",
 		"build:installer:broken": "rm -rf bundle && yarn pkg installer.js --out-path bundle # TODO Create issue @ zeit/pkg",
-		"build:installer": "rm -rf bundle && yarn nexe --input installer.js --target 12.9.1 --output ./installer"
+		"build-installer": "./build-installer.sh"
 	},
 	"dependencies": {
+		"download-chromium": "^2.2.0",
 		"node-gyp": "^6.1.0",
 		"npm": "^6.13.6",
+		"patch-package": "^6.2.0",
+		"postinstall-postinstall": "^2.0.0",
 		"puppeteer": "^2.0.0",
 		"tar": "^5.0.5"
 	},

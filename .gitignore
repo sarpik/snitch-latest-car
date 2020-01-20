@@ -6,9 +6,10 @@
 
 # Packaged
 snitch-latest-car.zip
-/package
-/bundle
-/installer
+/package*
+/bundle*
+/installer*
+!/installer.js
 
 # Logs
 logs
