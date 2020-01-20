@@ -230,10 +230,13 @@ repoGzippedArchiveUrl: ${repoGzippedArchiveUrl}
 					installPath: chromiumInstallPath,
 				});
 
-				console.log(`building. cwd = '${process.cwd()}'`);
+				console.log("creating path to 'build.js'");
 				const dynamicBuildScriptPath = path.join(process.cwd(), "build.js");
+
+				console.log(`requiring '${dynamicBuildScriptPath}'`);
 				const build = require(dynamicBuildScriptPath);
 
+				console.log("building");
 				await build();
 
 				console.log("moving into package");
