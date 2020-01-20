@@ -44,5 +44,5 @@ yarn
 ### Compiling an executable
 
 ```sh
-yarn build:installer
+yarn build-installer
 ```
