@@ -14,6 +14,7 @@
 		"build-installer": "./build-installer.sh"
 	},
 	"dependencies": {
+		"download-chromium": "^2.2.0",
 		"node-gyp": "^6.1.0",
 		"npm": "^6.13.6",
 		"puppeteer": "^2.0.0",
