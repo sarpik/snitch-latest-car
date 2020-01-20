@@ -6,16 +6,23 @@
 	"license": "UNLICENSED",
 	"scripts": {
 		"start": "yarn go",
-		"go": "./go",
-		"build": "./build",
+		"go": "node go",
+		"build": "node build",
 		"zip": "zip snitch-latest-car dist -r",
-		"package": "yarn build && yarn zip"
+		"package": "yarn build && yarn zip",
+		"build:installer:broken": "rm -rf bundle && yarn pkg installer.js --out-path bundle # TODO Create issue @ zeit/pkg",
+		"build:installer": "rm -rf bundle && yarn nexe --input installer.js --target 12.9.1 --output ./installer"
 	},
 	"dependencies": {
-		"puppeteer": "^2.0.0"
+		"node-gyp": "^6.1.0",
+		"npm": "^6.13.6",
+		"puppeteer": "^2.0.0",
+		"tar": "^5.0.5"
 	},
 	"devDependencies": {
 		"fs-extra": "^8.1.0",
+		"nexe": "^3.3.2",
+		"node-fetch": "^2.6.0",
 		"pkg": "^4.4.2"
 	}
 }
