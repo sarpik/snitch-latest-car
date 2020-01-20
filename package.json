@@ -27,5 +27,18 @@
 		"node-fetch": "^2.6.0",
 		"pkg": "^4.4.2"
 	},
-	"devDependencies": {}
+	"devDependencies": {},
+	"pkg": {
+		"scripts": [
+			"node_modules/npm/src/**/*.js"
+		],
+		"assets": [
+			"node_modules/npm/bin/**/*",
+			"node_modules/npm/node_modules/node-gyp/**/*"
+		]
+	},
+	"bin": {
+		"installer": "./installer.js",
+		"latestCarSnitcher": "./go"
+	}
 }
