@@ -11,8 +11,8 @@
 		"build": "node build",
 		"zip": "zip snitch-latest-car dist -r",
 		"package": "yarn build && yarn zip",
-		"build:installer:broken": "rm -rf bundle && yarn pkg installer.js --out-path bundle # TODO Create issue @ zeit/pkg",
-		"build-installer": "./build-installer.sh"
+		"build:installer:broken": "./build-installer.sh",
+		"build-installer": "./build-installer-pkg.sh"
 	},
 	"dependencies": {
 		"download-chromium": "^2.2.0",
@@ -27,5 +27,18 @@
 		"node-fetch": "^2.6.0",
 		"pkg": "^4.4.2"
 	},
-	"devDependencies": {}
+	"devDependencies": {},
+	"pkg": {
+		"scripts": [
+			"node_modules/npm/src/**/*.js"
+		],
+		"assets": [
+			"node_modules/npm/bin/**/*",
+			"node_modules/npm/node_modules/node-gyp/**/*"
+		]
+	},
+	"bin": {
+		"installer": "./installer.js",
+		"latestCarSnitcher": "./go"
+	}
 }

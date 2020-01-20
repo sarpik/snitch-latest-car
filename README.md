@@ -6,7 +6,7 @@ A freelance project to snitch the latest updated car from a seller's website.
 
 I managed to package all this whole thing into a single executable!
 
-The big issue here was puppeteer - you cannot put chromium into the binary. Thus I've created the mighty [installer.js](./installer.js), which itself gets converted into an executable binary & then installs everything that's needed.
+The big issue here was puppeteer (& cross-platform compatability) - you cannot put chromium into the binary. Thus I've created the mighty [installer.js](./installer.js), which itself gets converted into an executable binary & then installs everything that's needed.
 
 ### Why though?
 
@@ -44,5 +44,11 @@ yarn
 ### Compiling an executable
 
 ```sh
-yarn build:installer
+yarn build-installer
 ```
+
+## Notes
+
+### The `pkg` field in [./package.json](./package.json)
+
+See https://github.com/zeit/pkg/issues/830 and https://github.com/zeit/pkg/issues/829
