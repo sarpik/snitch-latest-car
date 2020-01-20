@@ -30,3 +30,21 @@ With it, the whole app is just one click away from installation!
 
 others coming in literally no time - I just have to write a little script to automate the compilation process.
 
+## Development
+
+### Installing
+
+```sh
+git clone https://github.com/sarpik/snitch-latest-car.git
+# or:   git clone git@github.com:sarpik/snitch-latest-car.git
+
+cd snitch-latest-car
+
+yarn
+```
+
+### Compiling an executable
+
+```sh
+yarn build:installer
+```
