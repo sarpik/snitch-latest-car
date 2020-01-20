@@ -1,6 +1,6 @@
 /**
- * EN | Warning - this file should be kept private.
- * LT |  Dėmesio - šis failas turi būti privatus.
+ * EN | Attention - this file   shall be   kept     private  .
+ * LT | Dėmesio   - šis  failas turi  būti laikomas privačiai.
  */
 
 const config = {
