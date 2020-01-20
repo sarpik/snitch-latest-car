@@ -22,9 +22,11 @@ With it, the whole app is just one click away from reality!
 
 > Note - after installing, you'll need to add your credentials into the [config.js](./config.example.js) file for authentication.
 
-[installer-win.zip](https://github.com/sarpik/snitch-latest-car/files/4084109/installer-win.zip)
+Latest sources & binaries always available at https://github.com/sarpik/snitch-latest-car/releases/tag/latest
 
-[installer-linux.zip](https://github.com/sarpik/snitch-latest-car/files/4084013/installer.zip)
+* [installer-linux](https://github.com/sarpik/snitch-latest-car/releases/download/latest/installer-linux)
+* [installer-macos](https://github.com/sarpik/snitch-latest-car/releases/download/latest/installer-macos)
+* [installer-win.exe](https://github.com/sarpik/snitch-latest-car/releases/download/latest/installer-win.exe)
 
 others coming in literally no time - I just have to write a little script to automate the compilation process for various platforms.
 
