@@ -1,8 +1,14 @@
+# Misc
+/.trash
+
 # Private
 /config.js
 
 # Packaged
 snitch-latest-car.zip
+/package
+/bundle
+/installer
 
 # Logs
 logs
