@@ -5,6 +5,7 @@
 	"author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
 	"license": "UNLICENSED",
 	"scripts": {
+		"postinstall": "patch-package",
 		"start": "yarn go",
 		"go": "node go",
 		"build": "node build",
@@ -17,6 +18,8 @@
 		"download-chromium": "^2.2.0",
 		"node-gyp": "^6.1.0",
 		"npm": "^6.13.6",
+		"patch-package": "^6.2.0",
+		"postinstall-postinstall": "^2.0.0",
 		"puppeteer": "^2.0.0",
 		"tar": "^5.0.5"
 	},

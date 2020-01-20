@@ -1,0 +1,13 @@
+diff --git a/node_modules/download-chromium/index.js b/node_modules/download-chromium/index.js
+index 1f88185..a976f2b 100644
+--- a/node_modules/download-chromium/index.js
++++ b/node_modules/download-chromium/index.js
+@@ -67,7 +67,7 @@ const homePath = require('os').homedir()
+ const cacheRoot = `${homePath}/.chromium-cache`
+ 
+ const getFolderPath = (root, platform, revision) =>
+-  `${root}/chromium-${platform}-${revision}`
++  `${root}/${platform}-${revision}`
+ 
+ const getExecutablePath = (root, platform, revision) => {
+   const folder = getFolderPath(root, platform, revision)
