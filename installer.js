@@ -59,7 +59,7 @@ const streamPipeline = util.promisify(require("stream").pipeline);
 const repoName = "snitch-latest-car";
 const repoUrl = `https://github.com/sarpik/${repoName}`;
 const repoBranch = "master";
-const getRepoPath = (tempDir) => path.join(tempDir, `${repoName}-${repoBranch}`);
+const getRepoPath = (tempDir) => path.join(tempDir, `${repoName}-${repoBranch.replace("/", "-")}`);
 
 /**
  * Turns out there's a `.tar.gz` also available for the master branch!
