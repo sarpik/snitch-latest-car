@@ -30,7 +30,8 @@ const build = async () => {
 	await fs.copyFile(exampleConfigFilePath, configFileOutPath);
 
 	await execPkgAsync([
-		"./go", //
+		path.join(process.cwd(), "go"),
+		// "./go", //
 		"--out-path",
 		outDirPath,
 		"--config",
