@@ -6,8 +6,8 @@
 	"license": "UNLICENSED",
 	"scripts": {
 		"start": "yarn go",
-		"go": "./go",
-		"build": "./build",
+		"go": "node go",
+		"build": "node build",
 		"zip": "zip snitch-latest-car dist -r",
 		"package": "yarn build && yarn zip",
 		"build:installer:broken": "rm -rf bundle && yarn pkg installer.js --out-path bundle # TODO Create issue @ zeit/pkg",
