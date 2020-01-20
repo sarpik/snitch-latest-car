@@ -82,7 +82,12 @@ const repoGzippedArchiveUrl = `${repoUrl}/archive/${repoBranch}.tar.gz`;
  *
  */
 const installer = async () => {
-	const shouldUseProduction = !!process.env.PROD;
+	/**
+	 * if you want to use the DEV environment - set `DEV` to a non-empty value
+	 * otherwise this defaults to `true`,
+	 * and it's important because that's what the end user gets by default!
+	 */
+	const shouldUseProduction = !process.env.DEV;
 
 	console.log(`\
 installer
