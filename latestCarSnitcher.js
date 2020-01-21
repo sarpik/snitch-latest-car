@@ -19,17 +19,19 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  * 0. launch the browser
  * 1. go to the main url
  * 2. authenticate
- * 3. Go to the latest update car page
- * 4. store the initial latest car's ID
- * 5. refresh the page until a newer car with a different ID appears
- * 6. scroll down to the bottom of the newer / latest car's info page
- * 7. click the "buy now" button to navigate to another page
- * 8. click on the input field for "identification number"
- * 9. paste the identification number (always the same)
- * 10. click "continue shopping" - the car is reserved for 5 minutes
- * 11. click "go back"
- * 12?. notify the user that we've captured something
- * 13. go to step 4
+ * 3. go to the "latest updated cars" page
+ * 4. start looping infinitely
+ * 4.1 keep track of previously & currently available cars
+ * 4.2 refresh the page until a newer car/cars with different IDs appear
+ * 4.3 for each newly detected car:
+ * 4.3.1 scroll down to the bottom of the newer car info page
+ * 4.3.2 click the "buy now" button to navigate to another page
+ * 4.3.5 click on the input field for "identification number"
+ * 4.3.6 paste the identification number (always the same)
+ * 4.3.7 click "continue shopping" - the car is reserved for 5 minutes
+ * 4.3.8 click "go back"
+ * 4.3.9? notify the user that we've snitched something
+ * 4.4 repeat - go to step 4.
  *
  * NOTE
  * if a selector does not work, make sure it's unique
