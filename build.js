@@ -64,10 +64,10 @@ const build = async () => {
 	const chromiumDirPath = path.join("node_modules", "puppeteer", ".local-chromium");
 	const chromiumOutDirPath = path.join(outDirPath, "puppeteer");
 
-	console.log(`remove '${oldDirPath}'`);
+	console.log(`remove '${outDirPath}'`);
 	await fs.remove(outDirPath);
 
-	console.log(`ensure '${oldDirPath}' exists`);
+	console.log(`ensure '${outDirPath}' exists`);
 	await fs.ensureDir(outDirPath);
 
 	console.log(`copy '${exampleConfigFilePath}' to '${configFileOutPath}'`);
@@ -75,7 +75,7 @@ const build = async () => {
 
 	console.log(`build the binary using 'zeit/pkg' 'exec' module`);
 	await execPkgAsync([
-		path.join(process.cwd(), "go"),
+		path.join(process.cwd(), "go"), //
 		"--out-path",
 		outDirPath,
 		"--config",
