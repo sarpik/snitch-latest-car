@@ -29,13 +29,13 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  * 10. click "continue shopping" - the car is reserved for 5 minutes
  * 11. click "go back"
  * 12?. notify the user that we've captured something
- * 13. exit OR repeat?
+ * 13. go to step 4
  *
  * NOTE
  * if a selector does not work, make sure it's unique
  * if it's not, use the full xpath instead.
  *
- * @returns {Promise<void>}
+ * @returns {Promise<never>}
  */
 // export const latestCarSnitcher = async () => {
 const latestCarSnitcher = async () => {
@@ -76,47 +76,36 @@ const latestCarSnitcher = async () => {
 		}
 
 		latestVehicleId = currentVehicleId;
-		break;
+
+		console.log("latestVehicleId", latestVehicleId);
+
+		const buyNowButtonFullXPath =
+			"/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
+
+		await page.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
+		const buyNowButtonElement = (await page.$x(buyNowButtonFullXPath))[0];
+		await buyNowButtonElement.click();
+
+		/**  */
+		const identificationNumberInputSelector = "#b_ssn";
+
+		await page.waitFor(identificationNumberInputSelector);
+		await page.focus(identificationNumberInputSelector);
+		await page.keyboard.type(config.identificationNumber.toString());
+
+		/**  */
+		const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
+
+		await page.waitFor(continueShoppingButtonSelector); /** not necessary atm */
+		await page.click(continueShoppingButtonSelector);
+
+		/**  */
+		const goBackButtonSelector =
+			"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
+
+		await page.waitFor(goBackButtonSelector);
+		await page.click(goBackButtonSelector);
 	}
-
-	console.log("latestVehicleId", latestVehicleId);
-
-	const buyNowButtonFullXPath =
-		"/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
-
-	await page.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
-	const buyNowButtonElement = (await page.$x(buyNowButtonFullXPath))[0];
-	await buyNowButtonElement.click();
-
-	/**  */
-	const identificationNumberInputSelector = "#b_ssn";
-
-	await page.waitFor(identificationNumberInputSelector);
-	await page.focus(identificationNumberInputSelector);
-	await page.keyboard.type(config.identificationNumber.toString());
-
-	/**  */
-	const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
-
-	await page.waitFor(continueShoppingButtonSelector); /** not necessary atm */
-	await page.click(continueShoppingButtonSelector);
-
-	/**  */
-	const goBackButtonSelector =
-		"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
-
-	await page.waitFor(goBackButtonSelector);
-	await page.click(goBackButtonSelector);
-
-	// eslint-disable-next-line no-extra-boolean-cast
-	if (!!config.headless || !!config.shouldCloseBrowserOnceDone) {
-		await page.close({});
-		await browser.close();
-	}
-
-	console.log("done");
-
-	return;
 };
 
 /**
