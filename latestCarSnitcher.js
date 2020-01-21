@@ -29,13 +29,13 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  * 10. click "continue shopping" - the car is reserved for 5 minutes
  * 11. click "go back"
  * 12?. notify the user that we've captured something
- * 13. exit OR repeat?
+ * 13. go to step 4
  *
  * NOTE
  * if a selector does not work, make sure it's unique
  * if it's not, use the full xpath instead.
  *
- * @returns {Promise<void>}
+ * @returns {Promise<never>}
  */
 // export const latestCarSnitcher = async () => {
 const latestCarSnitcher = async () => {
@@ -56,18 +56,27 @@ const latestCarSnitcher = async () => {
 
 	await page.goto(recentlyAddedVehiclesUrl);
 
+	/**
+	 * Here we keep track of the previous & the current vehicles' IDs.
+	 *
+	 * If they aren't equal, it means that a new car has been spotted
+	 * and thus we go on and try to snitch it real quick!
+	 *
+	 */
+
 	/** @type {number} */
-	const initialVehicleId = await getCurrentVehicleId(page);
+	let previousVehicleId = 0;
 
-	console.log("initialVehicleId", initialVehicleId);
+	/** @type {number} */
+	let currentVehicleId = await getCurrentVehicleId(page);
 
-	/**e @type {(number|null)} */
-	let latestVehicleId = null;
+	console.log("initial `currentVehicleId` =", currentVehicleId);
 
 	while (true) {
-		const currentVehicleId = await getCurrentVehicleId(page);
+		previousVehicleId = currentVehicleId;
+		currentVehicleId = await getCurrentVehicleId(page);
 
-		if (currentVehicleId === initialVehicleId) {
+		if (currentVehicleId === previousVehicleId) {
 			/** nothing new - refresh & try again */
 			await page.reload();
 
@@ -75,48 +84,44 @@ const latestCarSnitcher = async () => {
 			continue;
 		}
 
-		latestVehicleId = currentVehicleId;
-		break;
+		/** we have found a new car ID */
+
+		console.log("new `currentVehicleId` =", currentVehicleId);
+
+		const pageForSnitchingTheVehicle = await browser.newPage();
+		const latestVehiclePageUrl = getVehicleUrlById(currentVehicleId);
+
+		pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
+
+		const buyNowButtonFullXPath =
+			"/html/body/div[1]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
+
+		await pageForSnitchingTheVehicle.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
+		const buyNowButtonElement = (await pageForSnitchingTheVehicle.$x(buyNowButtonFullXPath))[0];
+		await buyNowButtonElement.click();
+
+		/**  */
+		const identificationNumberInputSelector = "#b_ssn";
+
+		await pageForSnitchingTheVehicle.waitFor(identificationNumberInputSelector);
+		await pageForSnitchingTheVehicle.focus(identificationNumberInputSelector);
+		await pageForSnitchingTheVehicle.keyboard.type(config.identificationNumber.toString());
+
+		/**  */
+		const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
+
+		await pageForSnitchingTheVehicle.waitFor(continueShoppingButtonSelector); /** not necessary atm */
+		await pageForSnitchingTheVehicle.click(continueShoppingButtonSelector);
+
+		/**  */
+		const goBackButtonSelector =
+			"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
+
+		await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
+		await pageForSnitchingTheVehicle.click(goBackButtonSelector);
+
+		await pageForSnitchingTheVehicle.close();
 	}
-
-	console.log("latestVehicleId", latestVehicleId);
-
-	const buyNowButtonFullXPath =
-		"/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
-
-	await page.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
-	const buyNowButtonElement = (await page.$x(buyNowButtonFullXPath))[0];
-	await buyNowButtonElement.click();
-
-	/**  */
-	const identificationNumberInputSelector = "#b_ssn";
-
-	await page.waitFor(identificationNumberInputSelector);
-	await page.focus(identificationNumberInputSelector);
-	await page.keyboard.type(config.identificationNumber.toString());
-
-	/**  */
-	const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
-
-	await page.waitFor(continueShoppingButtonSelector); /** not necessary atm */
-	await page.click(continueShoppingButtonSelector);
-
-	/**  */
-	const goBackButtonSelector =
-		"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
-
-	await page.waitFor(goBackButtonSelector);
-	await page.click(goBackButtonSelector);
-
-	// eslint-disable-next-line no-extra-boolean-cast
-	if (!!config.headless || !!config.shouldCloseBrowserOnceDone) {
-		await page.close({});
-		await browser.close();
-	}
-
-	console.log("done");
-
-	return;
 };
 
 /**
@@ -246,6 +251,27 @@ function parseVehicleIDFromOnclick(onclickAttributeStr) {
 
 	return idNum;
 }
+
+/**
+ * We want to be able to click on a vehicle's card to navigate to it,
+ * but that is disabled by the website.
+ *
+ * Istead, they use their `viewdetail` function (available globally),
+ * and after logging it @ the devtools console,
+ * I found the query parameters that need to be passed in
+ * in order to get a URL
+ * that will show you the wanted vehicle.
+ *
+ * And this function just allows you to pass in an ID
+ * and get back a URL that you can now open
+ * to view the specific vehicle's info page.
+ *
+ *
+ * @param {number} vehicleId
+ *
+ * @returns {string}
+ */
+const getVehicleUrlById = (vehicleId) => `${url}?mod=ajveh&act=nview&id=${vehicleId}&img=${null}`;
 
 /**
  *
