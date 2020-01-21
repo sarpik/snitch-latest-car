@@ -64,19 +64,36 @@ const latestCarSnitcher = async () => {
 	 *
 	 */
 
-	/** @type {number} */
-	let previousVehicleId = 0;
+	/** @type {number[]} */
+	let previousVehicleIds = [];
 
-	/** @type {number} */
-	let currentVehicleId = await getCurrentVehicleId(page);
+	/** @type {number[]} */
+	let currentVehicleIds = await getIdsOfLatestVehicles(page, config.howManyLatestCarsToWatch);
 
-	console.log("initial `currentVehicleId` =", currentVehicleId);
+	console.log("initial `currentVehicleIds` =", currentVehicleIds);
 
 	while (true) {
-		previousVehicleId = currentVehicleId;
-		currentVehicleId = await getCurrentVehicleId(page);
+		previousVehicleIds = currentVehicleIds;
+		currentVehicleIds = await getIdsOfLatestVehicles(page, config.howManyLatestCarsToWatch);
 
-		if (currentVehicleId === previousVehicleId) {
+		/** @type {number[]} */
+		const previouslyUnseenVehicleIds = [];
+
+		/**
+		 * Find all IDs that have not been seen previously
+		 */
+
+		for (const currentId of currentVehicleIds) {
+			/** nothing new */
+			if (previousVehicleIds.includes(currentId)) {
+				continue;
+			}
+
+			/** a new ID has appeared! */
+			previouslyUnseenVehicleIds.push(currentId);
+		}
+
+		if (!previouslyUnseenVehicleIds.length) {
 			/** nothing new - refresh & try again */
 			await page.reload();
 
@@ -84,9 +101,9 @@ const latestCarSnitcher = async () => {
 			continue;
 		}
 
-		/** we have found a new car ID */
+		/** we have found one or more new cars' IDs */
 
-		console.log("new `currentVehicleId` =", currentVehicleId);
+		console.log("new `previouslyUnseenVehicleIds` =", previouslyUnseenVehicleIds);
 
 		const pageForSnitchingTheVehicle = await browser.newPage();
 		const latestVehiclePageUrl = getVehicleUrlById(currentVehicleId);
@@ -204,7 +221,7 @@ async function getIdsOfLatestVehicles(page, howMany = 1) {
 	/**
 	 * @NOTE this is an `id`, but it's **not** unique
 	 * & they use it like a `class`
- */
+	 */
 	const aHrefXPath = '//*[@id="vehdetail"]/a';
 
 	/** @type {puppeteer.ElementHandle<Element>[]} */
@@ -214,10 +231,10 @@ async function getIdsOfLatestVehicles(page, howMany = 1) {
 	const vehicleIds = await Promise.all(
 		vehicleHrefElements.map(async (vehicleHrefElement) => {
 			const onclickHandlerProperty = await vehicleHrefElement.getProperty("onclick");
-	const onclickHandlerValue = getOnClickHandlerValue(onclickHandlerProperty);
-	const currentVehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
+			const onclickHandlerValue = getOnClickHandlerValue(onclickHandlerProperty);
+			const currentVehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
 
-	return currentVehicleId;
+			return currentVehicleId;
 		})
 	);
 
