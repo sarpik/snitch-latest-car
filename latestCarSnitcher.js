@@ -79,32 +79,39 @@ const latestCarSnitcher = async () => {
 
 		console.log("latestVehicleId", latestVehicleId);
 
+		const pageForSnitchingTheVehicle = await browser.newPage();
+		const latestVehiclePageUrl = getVehicleUrlById(latestVehicleId);
+
+		pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
+
 		const buyNowButtonFullXPath =
 			"/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
 
-		await page.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
-		const buyNowButtonElement = (await page.$x(buyNowButtonFullXPath))[0];
+		await pageForSnitchingTheVehicle.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
+		const buyNowButtonElement = (await pageForSnitchingTheVehicle.$x(buyNowButtonFullXPath))[0];
 		await buyNowButtonElement.click();
 
 		/**  */
 		const identificationNumberInputSelector = "#b_ssn";
 
-		await page.waitFor(identificationNumberInputSelector);
-		await page.focus(identificationNumberInputSelector);
-		await page.keyboard.type(config.identificationNumber.toString());
+		await pageForSnitchingTheVehicle.waitFor(identificationNumberInputSelector);
+		await pageForSnitchingTheVehicle.focus(identificationNumberInputSelector);
+		await pageForSnitchingTheVehicle.keyboard.type(config.identificationNumber.toString());
 
 		/**  */
 		const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
 
-		await page.waitFor(continueShoppingButtonSelector); /** not necessary atm */
-		await page.click(continueShoppingButtonSelector);
+		await pageForSnitchingTheVehicle.waitFor(continueShoppingButtonSelector); /** not necessary atm */
+		await pageForSnitchingTheVehicle.click(continueShoppingButtonSelector);
 
 		/**  */
 		const goBackButtonSelector =
 			"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
 
-		await page.waitFor(goBackButtonSelector);
-		await page.click(goBackButtonSelector);
+		await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
+		await pageForSnitchingTheVehicle.click(goBackButtonSelector);
+
+		await pageForSnitchingTheVehicle.close();
 	}
 };
 
