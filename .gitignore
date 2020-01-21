@@ -8,6 +8,7 @@
 snitch-latest-car.zip
 /package*
 /bundle*
+/compiled*
 /installer*
 !/installer.js
 

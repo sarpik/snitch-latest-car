@@ -5,7 +5,7 @@
 # https://github.com/nexe/nexe/issues/719
 #
 
-outDir="installer-pkg"
+outDir="compiled-installers"
 fileNameTemplate="$outDir/installer"
 
 rm -rf "$outDir" && yarn pkg ./package.json --output "$fileNameTemplate" --target "node12-linux,node12-win,node12-macos"
