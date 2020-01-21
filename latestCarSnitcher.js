@@ -19,17 +19,19 @@ const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act
  * 0. launch the browser
  * 1. go to the main url
  * 2. authenticate
- * 3. Go to the latest update car page
- * 4. store the initial latest car's ID
- * 5. refresh the page until a newer car with a different ID appears
- * 6. scroll down to the bottom of the newer / latest car's info page
- * 7. click the "buy now" button to navigate to another page
- * 8. click on the input field for "identification number"
- * 9. paste the identification number (always the same)
- * 10. click "continue shopping" - the car is reserved for 5 minutes
- * 11. click "go back"
- * 12?. notify the user that we've captured something
- * 13. go to step 4
+ * 3. go to the "latest updated cars" page
+ * 4. start looping infinitely
+ * 4.1 keep track of previously & currently available cars
+ * 4.2 refresh the page until a newer car/cars with different IDs appear
+ * 4.3 for each newly detected car:
+ * 4.3.1 scroll down to the bottom of the newer car info page
+ * 4.3.2 click the "buy now" button to navigate to another page
+ * 4.3.5 click on the input field for "identification number"
+ * 4.3.6 paste the identification number (always the same)
+ * 4.3.7 click "continue shopping" - the car is reserved for 5 minutes
+ * 4.3.8 click "go back"
+ * 4.3.9? notify the user that we've snitched something
+ * 4.4 repeat - go to step 4.
  *
  * NOTE
  * if a selector does not work, make sure it's unique
@@ -64,19 +66,36 @@ const latestCarSnitcher = async () => {
 	 *
 	 */
 
-	/** @type {number} */
-	let previousVehicleId = 0;
+	/** @type {number[]} */
+	let previousVehicleIds = [];
 
-	/** @type {number} */
-	let currentVehicleId = await getCurrentVehicleId(page);
+	/** @type {number[]} */
+	let currentVehicleIds = await getIdsOfLatestVehicles(page, config.howManyLatestCarsToWatch);
 
-	console.log("initial `currentVehicleId` =", currentVehicleId);
+	console.log("initial `currentVehicleIds` =", currentVehicleIds);
 
 	while (true) {
-		previousVehicleId = currentVehicleId;
-		currentVehicleId = await getCurrentVehicleId(page);
+		previousVehicleIds = currentVehicleIds;
+		currentVehicleIds = await getIdsOfLatestVehicles(page, config.howManyLatestCarsToWatch);
 
-		if (currentVehicleId === previousVehicleId) {
+		/** @type {number[]} */
+		const previouslyUnseenVehicleIds = [];
+
+		/**
+		 * Find all IDs that have not been seen previously
+		 */
+
+		for (const currentId of currentVehicleIds) {
+			/** nothing new */
+			if (previousVehicleIds.includes(currentId)) {
+				continue;
+			}
+
+			/** a new ID has appeared! */
+			previouslyUnseenVehicleIds.push(currentId);
+		}
+
+		if (!previouslyUnseenVehicleIds.length) {
 			/** nothing new - refresh & try again */
 			await page.reload();
 
@@ -84,43 +103,50 @@ const latestCarSnitcher = async () => {
 			continue;
 		}
 
-		/** we have found a new car ID */
+		/** we have found one or more new cars' IDs */
 
-		console.log("new `currentVehicleId` =", currentVehicleId);
+		console.log("new `previouslyUnseenVehicleIds` =", previouslyUnseenVehicleIds);
 
-		const pageForSnitchingTheVehicle = await browser.newPage();
-		const latestVehiclePageUrl = getVehicleUrlById(currentVehicleId);
+		/**
+		 * Snitch all them newly spotted vehicles baby! 🔭🔭
+		 */
+		await Promise.all(
+			previouslyUnseenVehicleIds.map(async (previouslyUnseenVehicleId) => {
+				const pageForSnitchingTheVehicle = await browser.newPage();
+				const latestVehiclePageUrl = getVehicleUrlById(previouslyUnseenVehicleId);
 
-		pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
+				pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
 
-		const buyNowButtonFullXPath =
-			"/html/body/div[1]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
+				const buyNowButtonFullXPath =
+					"/html/body/div[1]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
 
-		await pageForSnitchingTheVehicle.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
-		const buyNowButtonElement = (await pageForSnitchingTheVehicle.$x(buyNowButtonFullXPath))[0];
-		await buyNowButtonElement.click();
+				await pageForSnitchingTheVehicle.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
+				const buyNowButtonElement = (await pageForSnitchingTheVehicle.$x(buyNowButtonFullXPath))[0];
+				await buyNowButtonElement.click();
 
-		/**  */
-		const identificationNumberInputSelector = "#b_ssn";
+				/**  */
+				const identificationNumberInputSelector = "#b_ssn";
 
-		await pageForSnitchingTheVehicle.waitFor(identificationNumberInputSelector);
-		await pageForSnitchingTheVehicle.focus(identificationNumberInputSelector);
-		await pageForSnitchingTheVehicle.keyboard.type(config.identificationNumber.toString());
+				await pageForSnitchingTheVehicle.waitFor(identificationNumberInputSelector);
+				await pageForSnitchingTheVehicle.focus(identificationNumberInputSelector);
+				await pageForSnitchingTheVehicle.keyboard.type(config.identificationNumber.toString());
 
-		/**  */
-		const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
+				/**  */
+				const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
 
-		await pageForSnitchingTheVehicle.waitFor(continueShoppingButtonSelector); /** not necessary atm */
-		await pageForSnitchingTheVehicle.click(continueShoppingButtonSelector);
+				await pageForSnitchingTheVehicle.waitFor(continueShoppingButtonSelector); /** not necessary atm */
+				await pageForSnitchingTheVehicle.click(continueShoppingButtonSelector);
 
-		/**  */
-		const goBackButtonSelector =
-			"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
+				/**  */
+				const goBackButtonSelector =
+					"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
 
-		await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
-		await pageForSnitchingTheVehicle.click(goBackButtonSelector);
+				await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
+				await pageForSnitchingTheVehicle.click(goBackButtonSelector);
 
-		await pageForSnitchingTheVehicle.close();
+				await pageForSnitchingTheVehicle.close();
+			})
+		);
 	}
 };
 
@@ -196,17 +222,32 @@ async function authenticate(page, username, password) {
 
 /**
  * @param {puppeteer.Page} page
+ * @param {number} [howMany=1]
  *
- * @returns {Promise<number>}
+ * @returns {Promise<number[]>}
  */
-async function getCurrentVehicleId(page) {
+async function getIdsOfLatestVehicles(page, howMany = 1) {
+	/**
+	 * @NOTE this is an `id`, but it's **not** unique
+	 * & they use it like a `class`
+	 */
 	const aHrefXPath = '//*[@id="vehdetail"]/a';
 
-	const onclickHandlerProperty = await getPropertyByXPath(page, aHrefXPath, "onclick");
-	const onclickHandlerValue = getOnClickHandlerValue(onclickHandlerProperty);
-	const currentVehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
+	/** @type {puppeteer.ElementHandle<Element>[]} */
+	const vehicleHrefElements = await (await page.$x(aHrefXPath)).splice(0, howMany);
 
-	return currentVehicleId;
+	/** @type {number[]} */
+	const vehicleIds = await Promise.all(
+		vehicleHrefElements.map(async (vehicleHrefElement) => {
+			const onclickHandlerProperty = await vehicleHrefElement.getProperty("onclick");
+			const onclickHandlerValue = getOnClickHandlerValue(onclickHandlerProperty);
+			const currentVehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
+
+			return currentVehicleId;
+		})
+	);
+
+	return vehicleIds;
 }
 
 /**

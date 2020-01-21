@@ -10,6 +10,7 @@ const config = {
 	username: "",
 	password: "",
 	identificationNumber: "",
+	howManyLatestCarsToWatch: 20,
 	headless: false,
 	shouldCloseBrowserOnceDone: false,
 };
