@@ -237,6 +237,27 @@ function parseVehicleIDFromOnclick(onclickAttributeStr) {
 }
 
 /**
+ * We want to be able to click on a vehicle's card to navigate to it,
+ * but that is disabled by the website.
+ *
+ * Istead, they use their `viewdetail` function (available globally),
+ * and after logging it @ the devtools console,
+ * I found the query parameters that need to be passed in
+ * in order to get a URL
+ * that will show you the wanted vehicle.
+ *
+ * And this function just allows you to pass in an ID
+ * and get back a URL that you can now open
+ * to view the specific vehicle's info page.
+ *
+ *
+ * @param {number} vehicleId
+ *
+ * @returns {string}
+ */
+const getVehicleUrlById = (vehicleId) => `${url}?mod=ajveh&act=nview&id=${vehicleId}&img=${null}`;
+
+/**
  *
  * @param {puppeteer.Page} page
  * @param {string} xpath
