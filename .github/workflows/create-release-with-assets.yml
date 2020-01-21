@@ -1,0 +1,71 @@
+# 
+# https://github.com/actions/upload-release-asset
+#
+# Push a tag with the prefix `v` to create a release with generated assets.
+#
+# This currently requires duplicate steps to upload different files,
+# see https://github.com/actions/upload-release-asset/issues/4
+# 
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Upload Release Asset
+
+jobs:
+  build:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Build project # This would actually build your project, using zip for an example artifact
+        run: |
+          yarn install
+          ./build-installer-pkg.sh
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: (linux) Upload Release Asset
+        id: upload-release-asset-linux
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./package/installer-linux
+          asset_name: installer-linux
+          asset_content_type: application/octet-stream # https://stackoverflow.com/a/6783972/9285308
+        
+      - name: (macos) Upload Release Asset
+        id: upload-release-asset-macos
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./package/installer-macos
+          asset_name: installer-macos
+          asset_content_type: application/octet-stream # https://stackoverflow.com/a/6783972/9285308
+        
+      - name: (win) Upload Release Asset
+        id: upload-release-asset-win
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./package/installer-win.exe
+          asset_name: installer-win.exe
+          asset_content_type: application/octet-stream # https://stackoverflow.com/a/6783972/9285308
