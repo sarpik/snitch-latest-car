@@ -1,6 +1,6 @@
 {
 	"name": "snitch-latest-car",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"main": "./go",
 	"author": "Kipras Melnikovas <kipras@kipras.org> (https://kipras.org/)",
 	"license": "UNLICENSED",
