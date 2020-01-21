@@ -196,17 +196,32 @@ async function authenticate(page, username, password) {
 
 /**
  * @param {puppeteer.Page} page
+ * @param {number} [howMany=1]
  *
- * @returns {Promise<number>}
+ * @returns {Promise<number[]>}
  */
-async function getCurrentVehicleId(page) {
+async function getIdsOfLatestVehicles(page, howMany = 1) {
+	/**
+	 * @NOTE this is an `id`, but it's **not** unique
+	 * & they use it like a `class`
+ */
 	const aHrefXPath = '//*[@id="vehdetail"]/a';
 
-	const onclickHandlerProperty = await getPropertyByXPath(page, aHrefXPath, "onclick");
+	/** @type {puppeteer.ElementHandle<Element>[]} */
+	const vehicleHrefElements = await (await page.$x(aHrefXPath)).splice(0, howMany);
+
+	/** @type {number[]} */
+	const vehicleIds = await Promise.all(
+		vehicleHrefElements.map(async (vehicleHrefElement) => {
+			const onclickHandlerProperty = await vehicleHrefElement.getProperty("onclick");
 	const onclickHandlerValue = getOnClickHandlerValue(onclickHandlerProperty);
 	const currentVehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
 
 	return currentVehicleId;
+		})
+	);
+
+	return vehicleIds;
 }
 
 /**
