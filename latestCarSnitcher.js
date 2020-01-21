@@ -56,18 +56,27 @@ const latestCarSnitcher = async () => {
 
 	await page.goto(recentlyAddedVehiclesUrl);
 
+	/**
+	 * Here we keep track of the previous & the current vehicles' IDs.
+	 *
+	 * If they aren't equal, it means that a new car has been spotted
+	 * and thus we go on and try to snitch it real quick!
+	 *
+	 */
+
 	/** @type {number} */
-	const initialVehicleId = await getCurrentVehicleId(page);
+	let previousVehicleId = 0;
 
-	console.log("initialVehicleId", initialVehicleId);
+	/** @type {number} */
+	let currentVehicleId = await getCurrentVehicleId(page);
 
-	/**e @type {(number|null)} */
-	let latestVehicleId = null;
+	console.log("initial `currentVehicleId` =", currentVehicleId);
 
 	while (true) {
-		const currentVehicleId = await getCurrentVehicleId(page);
+		previousVehicleId = currentVehicleId;
+		currentVehicleId = await getCurrentVehicleId(page);
 
-		if (currentVehicleId === initialVehicleId) {
+		if (currentVehicleId === previousVehicleId) {
 			/** nothing new - refresh & try again */
 			await page.reload();
 
@@ -75,12 +84,12 @@ const latestCarSnitcher = async () => {
 			continue;
 		}
 
-		latestVehicleId = currentVehicleId;
+		/** we have found a new car ID */
 
-		console.log("latestVehicleId", latestVehicleId);
+		console.log("new `currentVehicleId` =", currentVehicleId);
 
 		const pageForSnitchingTheVehicle = await browser.newPage();
-		const latestVehiclePageUrl = getVehicleUrlById(latestVehicleId);
+		const latestVehiclePageUrl = getVehicleUrlById(currentVehicleId);
 
 		pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
 
