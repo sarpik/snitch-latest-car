@@ -49,6 +49,27 @@ yarn
 yarn build-installer
 ```
 
+### Creating a new version + release
+
+See https://yarnpkg.com/lang/en/docs/cli/version
+
+```sh
+# choose one
+yarn version --patch
+yarn version --minor
+yarn version --major
+
+# push the new version commit + the new tag
+git push --follow-tags
+```
+
+that's it!
+
+The release, combined with compiled installer binaries,
+will be automatically created by github actions 🎉
+
+See [./.github/workflows/create-release-with-assets.yml](./.github/workflows/create-release-with-assets.yml)
+
 ## Notes
 
 ### The `pkg` field in [./package.json](./package.json)
