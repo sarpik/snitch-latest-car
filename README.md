@@ -54,3 +54,7 @@ yarn build-installer
 ### The `pkg` field in [./package.json](./package.json)
 
 See https://github.com/zeit/pkg/issues/830 and https://github.com/zeit/pkg/issues/829
+
+---
+
+Copyright © Kipras Melnikovas  — [@sarpik](https://github.com/sarpik) — https://kipras.org — <kipras@kipras.org>
