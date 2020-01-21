@@ -85,7 +85,7 @@ const latestCarSnitcher = async () => {
 		pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
 
 		const buyNowButtonFullXPath =
-			"/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
+			"/html/body/div[1]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
 
 		await pageForSnitchingTheVehicle.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
 		const buyNowButtonElement = (await pageForSnitchingTheVehicle.$x(buyNowButtonFullXPath))[0];
