@@ -343,10 +343,12 @@ function parseVehicleIDFromOnclick(onclickAttributeStr) {
  *
  *
  * @param {number} vehicleId
+ * @param {string} [imageFilename=null]
  *
  * @returns {string}
  */
-const getVehicleUrlById = (vehicleId) => `${url}?mod=ajveh&act=nview&id=${vehicleId}&img=${null}`;
+const getVehicleUrlById = (vehicleId, imageFilename = null) =>
+	`${url}?mod=ajveh&act=nview&id=${vehicleId}&img=${imageFilename}`;
 
 /**
  *
