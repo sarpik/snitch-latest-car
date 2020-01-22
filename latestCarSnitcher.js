@@ -14,6 +14,16 @@ const url = "https://www.vaurioajoneuvo.fi/";
 const recentlyAddedVehiclesUrl = "https://www.vaurioajoneuvo.fi/?mod=vehicle&act=lastest";
 
 /**
+ * @type {puppeteer.WaitForSelectorOptions}
+ *
+ * TODO - actually skip the current element if the waiting failed
+ * See https://github.com/sarpik/snitch-latest-car/issues/16
+ */
+const pageWaitForSelectorOptions = {
+	timeout: 1000 * 5 /** wait a maximum of 5 seconds before cancelling */,
+};
+
+/**
  * Workflow:
  *
  * 0. launch the browser
@@ -122,21 +132,27 @@ const latestCarSnitcher = async () => {
 				const buyNowButtonFullXPath =
 					"/html/body/div[1]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
 
-				await pageForSnitchingTheVehicle.waitForXPath(buyNowButtonFullXPath); /** not necessary atm */
+				await pageForSnitchingTheVehicle.waitForXPath(
+					buyNowButtonFullXPath,
+					pageWaitForSelectorOptions
+				); /** not necessary atm */
 				const buyNowButtonElement = (await pageForSnitchingTheVehicle.$x(buyNowButtonFullXPath))[0];
 				await buyNowButtonElement.click();
 
 				/**  */
 				const identificationNumberInputSelector = "#b_ssn";
 
-				await pageForSnitchingTheVehicle.waitFor(identificationNumberInputSelector);
+				await pageForSnitchingTheVehicle.waitFor(identificationNumberInputSelector, pageWaitForSelectorOptions);
 				await pageForSnitchingTheVehicle.focus(identificationNumberInputSelector);
 				await pageForSnitchingTheVehicle.keyboard.type(config.identificationNumber.toString());
 
 				/**  */
 				const continueShoppingButtonSelector = "#showcontent > div:nth-child(4) > form > div > input";
 
-				await pageForSnitchingTheVehicle.waitFor(continueShoppingButtonSelector); /** not necessary atm */
+				await pageForSnitchingTheVehicle.waitFor(
+					continueShoppingButtonSelector,
+					pageWaitForSelectorOptions
+				); /** not necessary atm */
 				await pageForSnitchingTheVehicle.click(continueShoppingButtonSelector);
 
 				/**
@@ -167,7 +183,7 @@ const latestCarSnitcher = async () => {
 				const goBackButtonSelector =
 					"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
 
-				await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
+				await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector, pageWaitForSelectorOptions);
 				await pageForSnitchingTheVehicle.click(goBackButtonSelector);
 
 				const loggingData = {
