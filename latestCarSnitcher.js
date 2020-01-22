@@ -257,9 +257,13 @@ async function authenticate(page, username, password) {
  * @param {puppeteer.Page} page
  * @param {number} [howMany=1]
  *
- * @returns {Promise<number[]>}
+ * @typedef {object} Cars
+ * @property {number[]} ids
+ * @property {string[]} imageFilenames
+ *
+ * @returns {Promise<Cars>}
  */
-async function getIdsOfLatestVehicles(page, howMany = 1) {
+async function getLatestCars(page, howMany = 1) {
 	/**
 	 * @NOTE this is an `id`, but it's **not** unique
 	 * & they use it like a `class`
@@ -267,20 +271,26 @@ async function getIdsOfLatestVehicles(page, howMany = 1) {
 	const aHrefXPath = '//*[@id="vehdetail"]/a';
 
 	/** @type {puppeteer.ElementHandle<Element>[]} */
-	const vehicleHrefElements = await (await page.$x(aHrefXPath)).splice(0, howMany);
+	const hrefElements = await (await page.$x(aHrefXPath)).splice(0, howMany);
 
 	/** @type {number[]} */
-	const vehicleIds = await Promise.all(
-		vehicleHrefElements.map(async (vehicleHrefElement) => {
-			const onclickHandlerProperty = await vehicleHrefElement.getProperty("onclick");
+	const ids = [];
+
+	/** @type {string[]} */
+	const imageFilenames = [];
+
+	for (const hrefElement of hrefElements) {
+		const onclickHandlerProperty = await hrefElement.getProperty("onclick");
 			const onclickHandlerValue = getOnClickHandlerValue(onclickHandlerProperty);
-			const currentVehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
 
-			return currentVehicleId;
-		})
-	);
+		const vehicleId = parseVehicleIDFromOnclick(onclickHandlerValue);
+		const vehicleImageFilename = parseVehicleImageFilenameFromOnclick(onclickHandlerValue);
 
-	return vehicleIds;
+		ids.push(vehicleId);
+		imageFilenames.push(vehicleImageFilename);
+	}
+
+	return { ids, imageFilenames };
 }
 
 /**
