@@ -352,6 +352,17 @@ const isVehicleCurrentlyReservedBySomeoneElse = async (vehiclePage) => {
 
 /**
  * @param {puppeteer.Page} vehiclePage
+ *
+ * @returns {Promise<boolean>}
+ */
+const hasVehicleAlreadyBeenBought = async (vehiclePage) => {
+	const vehicleHasAlreadyBeenBoughtSelector = "#showcontent > div > b > a";
+
+	return await doesElementExist(vehiclePage, vehicleHasAlreadyBeenBoughtSelector);
+};
+
+/**
+ * @param {puppeteer.Page} vehiclePage
  * @param {string} selector
  *
  * @returns {Promise<boolean>}
