@@ -329,6 +329,30 @@ async function getPropertyByXPath(page, xpath, propertyName) {
 	return rawProperty;
 }
 
+/**
+ * @param {puppeteer.Page} vehiclePage
+ * @param {string} selector
+ *
+ * @returns {Promise<boolean>}
+ */
+const doesElementExist = async (vehiclePage, selector) => {
+	/** @type {puppeteer.ElementHandle<Element>|null} */
+	let element;
+
+	/** @type {boolean} */
+	let doesItExist;
+
+	try {
+		element = await vehiclePage.$(selector);
+		doesItExist = element ? true : false;
+	} catch (e) {
+		/** not found - all good */
+		doesItExist = false;
+	}
+
+	return doesItExist;
+};
+
 module.exports = {
 	latestCarSnitcher,
 };
