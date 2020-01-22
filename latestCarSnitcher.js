@@ -328,6 +328,23 @@ function parseVehicleIDFromOnclick(onclickAttributeStr) {
 }
 
 /**
+ * See also `parseVehicleIDFromOnclick`
+ *
+ * @param {string} onclickAttributeStr
+ *
+ * @returns {string}
+ */
+function parseVehicleImageFilenameFromOnclick(onclickAttributeStr) {
+	/** @type {string} */
+	const imageFilename = onclickAttributeStr.split("'")[3];
+	/**   ` function onclick(event) { viewdetail('37640','1579264877_1347363_9336478.jpg'); }` */
+	/** `[" function onclick(event) { viewdetail(", "37640", ",", "1579264877_1347363_9336478.jpg", "); }"]` */
+	/**                                                          `"1579264877_1347363_9336478.jpg"` */
+
+	return imageFilename;
+}
+
+/**
  * We want to be able to click on a vehicle's card to navigate to it,
  * but that is disabled by the website.
  *
