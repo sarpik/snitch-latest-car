@@ -115,7 +115,9 @@ const latestCarSnitcher = async () => {
 				const pageForSnitchingTheVehicle = await browser.newPage();
 				const latestVehiclePageUrl = getVehicleUrlById(previouslyUnseenVehicleId);
 
-				pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
+				pageForSnitchingTheVehicle.goto(latestVehiclePageUrl, {
+					waitUntil: "domcontentloaded" /** avoids errors that would happen if the page wasn't loaded */,
+				});
 
 				const buyNowButtonFullXPath =
 					"/html/body/div[1]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
