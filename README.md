@@ -28,8 +28,6 @@ Latest sources & binaries always available at https://github.com/sarpik/snitch-l
 * [installer-macos](https://github.com/sarpik/snitch-latest-car/releases/latest/download/installer-macos)
 * [installer-win.exe](https://github.com/sarpik/snitch-latest-car/releases/latest/download/installer-win.exe)
 
-others coming in literally no time - I just have to write a little script to automate the compilation process for various platforms.
-
 ## Development
 
 ### Installing
