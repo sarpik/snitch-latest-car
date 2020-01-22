@@ -170,12 +170,13 @@ const latestCarSnitcher = async () => {
 				await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
 				await pageForSnitchingTheVehicle.click(goBackButtonSelector);
 
-				console.log(
-					"+ Vehicle successfully RESERVED, `id` =",
-					previouslyUnseenVehicleId,
-					"date =",
-					new Date().toISOString()
-				);
+				const loggingData = {
+					id: previouslyUnseenVehicleId,
+					date: new Date().toISOString(),
+					url: getVehicleUrlById(previouslyUnseenVehicleId),
+				};
+
+				console.table(loggingData);
 
 				await pageForSnitchingTheVehicle.close();
 			})
