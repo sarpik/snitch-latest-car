@@ -115,7 +115,9 @@ const latestCarSnitcher = async () => {
 				const pageForSnitchingTheVehicle = await browser.newPage();
 				const latestVehiclePageUrl = getVehicleUrlById(previouslyUnseenVehicleId);
 
-				pageForSnitchingTheVehicle.goto(latestVehiclePageUrl);
+				pageForSnitchingTheVehicle.goto(latestVehiclePageUrl, {
+					waitUntil: "domcontentloaded" /** avoids errors that would happen if the page wasn't loaded */,
+				});
 
 				const buyNowButtonFullXPath =
 					"/html/body/div[1]/table/tbody/tr[2]/td/div/table/tbody/tr[16]/td/div/div/div[2]/input";
@@ -137,12 +139,43 @@ const latestCarSnitcher = async () => {
 				await pageForSnitchingTheVehicle.waitFor(continueShoppingButtonSelector); /** not necessary atm */
 				await pageForSnitchingTheVehicle.click(continueShoppingButtonSelector);
 
+				/**
+				 * take care of edge cases
+				 *
+				 * Currently, we cannot do anything about them
+				 * & thus just close the browser tab
+				 * to allow other pages to process stuff
+				 *
+				 */
+				if (await isVehicleCurrentlyReservedBySomeoneElse(pageForSnitchingTheVehicle)) {
+					/** TODO - we could try again later */
+
+					console.warn("- Vehicle was already RESERVED, `id` =", previouslyUnseenVehicleId);
+
+					await pageForSnitchingTheVehicle.close();
+					return; /** return so the next item in the array can be `.map`ped through */
+				}
+
+				if (await hasVehicleAlreadyBeenBought(pageForSnitchingTheVehicle)) {
+					console.warn("- Vehicle was already BOUGHT, `id` =", previouslyUnseenVehicleId);
+
+					await pageForSnitchingTheVehicle.close();
+					return; /** return so the next item in the array can be `.map`ped through */
+				}
+
 				/**  */
 				const goBackButtonSelector =
 					"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
 
 				await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
 				await pageForSnitchingTheVehicle.click(goBackButtonSelector);
+
+				console.log(
+					"+ Vehicle successfully RESERVED, `id` =",
+					previouslyUnseenVehicleId,
+					"date =",
+					new Date().toISOString()
+				);
 
 				await pageForSnitchingTheVehicle.close();
 			})
@@ -328,6 +361,62 @@ async function getPropertyByXPath(page, xpath, propertyName) {
 
 	return rawProperty;
 }
+
+/**
+ * handle the case where a car might
+ * currently be reserved by someone else,
+ * thus skipping it
+ *
+ * TODO maybe add it to the waitlist & try again later?
+ *
+ * See also:
+ * https://www.vaurioajoneuvo.fi/?mod=vehicle&act=view&id=37228&img=MTU3NjQ4Mzc0NV8xMzM4MjE1XzkxNDcxNDguanBn
+ *
+ * @param {puppeteer.Page} vehiclePage
+ *
+ * @returns {Promise<boolean>}
+ */
+const isVehicleCurrentlyReservedBySomeoneElse = async (vehiclePage) => {
+	/** /html/body/div[2]/div[3]/div[2]/div[2] */
+	const vehicleIsCurrentlyReservedBySomeoneElseSelector = "#content > div.area_notice_container";
+
+	return await doesElementExist(vehiclePage, vehicleIsCurrentlyReservedBySomeoneElseSelector);
+};
+
+/**
+ * @param {puppeteer.Page} vehiclePage
+ *
+ * @returns {Promise<boolean>}
+ */
+const hasVehicleAlreadyBeenBought = async (vehiclePage) => {
+	const vehicleHasAlreadyBeenBoughtSelector = "#showcontent > div > b > a";
+
+	return await doesElementExist(vehiclePage, vehicleHasAlreadyBeenBoughtSelector);
+};
+
+/**
+ * @param {puppeteer.Page} vehiclePage
+ * @param {string} selector
+ *
+ * @returns {Promise<boolean>}
+ */
+const doesElementExist = async (vehiclePage, selector) => {
+	/** @type {puppeteer.ElementHandle<Element>|null} */
+	let element;
+
+	/** @type {boolean} */
+	let doesItExist;
+
+	try {
+		element = await vehiclePage.$(selector);
+		doesItExist = element ? true : false;
+	} catch (e) {
+		/** not found - all good */
+		doesItExist = false;
+	}
+
+	return doesItExist;
+};
 
 module.exports = {
 	latestCarSnitcher,
