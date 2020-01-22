@@ -66,17 +66,17 @@ const latestCarSnitcher = async () => {
 	 *
 	 */
 
-	/** @type {number[]} */
-	let previousVehicleIds = [];
+	/** @type {Cars} */
+	let previousCars = { ids: [], imageFilenames: [] };
 
-	/** @type {number[]} */
-	let currentVehicleIds = await getIdsOfLatestVehicles(page, config.howManyLatestCarsToWatch);
+	/** @type {Cars} */
+	let currentCars = await getLatestCars(page, config.howManyLatestCarsToWatch);
 
-	console.log("initial `currentVehicleIds` =", currentVehicleIds);
+	console.log("initial cars `ids` =", currentCars.ids);
 
 	while (true) {
-		previousVehicleIds = currentVehicleIds;
-		currentVehicleIds = await getIdsOfLatestVehicles(page, config.howManyLatestCarsToWatch);
+		previousCars = { ...currentCars };
+		currentCars = await getLatestCars(page, config.howManyLatestCarsToWatch);
 
 		/** @type {number[]} */
 		const previouslyUnseenVehicleIds = [];
@@ -85,9 +85,9 @@ const latestCarSnitcher = async () => {
 		 * Find all IDs that have not been seen previously
 		 */
 
-		for (const currentId of currentVehicleIds) {
+		for (const currentId of currentCars.ids) {
 			/** nothing new */
-			if (previousVehicleIds.includes(currentId)) {
+			if (previousCars.ids.includes(currentId)) {
 				continue;
 			}
 
