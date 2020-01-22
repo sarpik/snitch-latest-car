@@ -330,6 +330,27 @@ async function getPropertyByXPath(page, xpath, propertyName) {
 }
 
 /**
+ * handle the case where a car might
+ * currently be reserved by someone else,
+ * thus skipping it
+ *
+ * TODO maybe add it to the waitlist & try again later?
+ *
+ * See also:
+ * https://www.vaurioajoneuvo.fi/?mod=vehicle&act=view&id=37228&img=MTU3NjQ4Mzc0NV8xMzM4MjE1XzkxNDcxNDguanBn
+ *
+ * @param {puppeteer.Page} vehiclePage
+ *
+ * @returns {Promise<boolean>}
+ */
+const isVehicleCurrentlyReservedBySomeoneElse = async (vehiclePage) => {
+	/** /html/body/div[2]/div[3]/div[2]/div[2] */
+	const vehicleIsCurrentlyReservedBySomeoneElseSelector = "#content > div.area_notice_container";
+
+	return await doesElementExist(vehiclePage, vehicleIsCurrentlyReservedBySomeoneElseSelector);
+};
+
+/**
  * @param {puppeteer.Page} vehiclePage
  * @param {string} selector
  *
