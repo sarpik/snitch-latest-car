@@ -137,12 +137,43 @@ const latestCarSnitcher = async () => {
 				await pageForSnitchingTheVehicle.waitFor(continueShoppingButtonSelector); /** not necessary atm */
 				await pageForSnitchingTheVehicle.click(continueShoppingButtonSelector);
 
+				/**
+				 * take care of edge cases
+				 *
+				 * Currently, we cannot do anything about them
+				 * & thus just close the browser tab
+				 * to allow other pages to process stuff
+				 *
+				 */
+				if (await isVehicleCurrentlyReservedBySomeoneElse(pageForSnitchingTheVehicle)) {
+					/** TODO - we could try again later */
+
+					console.warn("- Vehicle was already RESERVED, `id` =", previouslyUnseenVehicleId);
+
+					await pageForSnitchingTheVehicle.close();
+					return; /** return so the next item in the array can be `.map`ped through */
+				}
+
+				if (await hasVehicleAlreadyBeenBought(pageForSnitchingTheVehicle)) {
+					console.warn("- Vehicle was already BOUGHT, `id` =", previouslyUnseenVehicleId);
+
+					await pageForSnitchingTheVehicle.close();
+					return; /** return so the next item in the array can be `.map`ped through */
+				}
+
 				/**  */
 				const goBackButtonSelector =
 					"#showcontent > div:nth-child(3) > table > tbody > tr:nth-child(8) > td > div > input:nth-child(1)";
 
 				await pageForSnitchingTheVehicle.waitFor(goBackButtonSelector);
 				await pageForSnitchingTheVehicle.click(goBackButtonSelector);
+
+				console.log(
+					"+ Vehicle successfully RESERVED, `id` =",
+					previouslyUnseenVehicleId,
+					"date =",
+					new Date().toISOString()
+				);
 
 				await pageForSnitchingTheVehicle.close();
 			})
